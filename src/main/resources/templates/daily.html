@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <title>시세보기</title>
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #e8f5e9;
+            margin: 0;
+            padding: 20px; /* 수정된 부분 */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2e7d32;
+            margin-bottom: 20px;
+        }
+
+        select, input {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #43a047;
+            border-radius: 5px;
+        }
+
+        table {
+            width: 80%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            border: 1px solid #aed581;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #66bb6a;
+            color: #ffffff;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dcedc8;
+        }
+
+        tr:hover {
+            background-color: #c5e1a5;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<h1>시세 정보</h1>
+<select id="productClsSelect" onchange="filterTable()">
+    <option value="" selected>도/소매</option>
+    <option th:each="item, i : ${price}" th:if="${i.first or item.product_cls_code != price[i.index - 1]?.product_cls_code}"
+            th:text="${item.product_cls_name}" th:value="${item.product_cls_code}">
+    </option>
+</select>
+<!--<select id="categorySelect" onchange="filterTable()">
+    <option value="" selected>선택안함</option>
+    <option th:each="item, i : ${price}" th:if="${i.first or item.category_code != price[i.index - 1]?.category_code}"
+            th:text="${item.category_name}" th:value="${item.category_code}">
+    </option>
+</select>-->
+
+<input id="searchInput" oninput="filterTable()" placeholder="검색어를 입력하세요">
+
+
+
+<table border="1" id="dataTable">
+    <thead>
+    <tr>
+        <th>도매상 이름</th>
+        <th>부류 이름</th>
+        <th>품목 이름</th>
+        <th>단위</th>
+        <th>최근 조사일자</th>
+        <th>최근 조사일자 가격</th>
+        <th>1일전 가격</th>
+        <th>1개월전 가격</th>
+        <th>1년전 가격</th>
+        <th>등락여부</th>
+        <th>등락율</th>
+        <!-- 다른 필드들도 추가해보세요 -->
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Thymeleaf 반복문을 사용해 데이터를 표시 -->
+    <tr th:each="item, i : ${price}" th:attr="product_cls_code=${item.product_cls_code}">
+        <td th:text="${item.product_cls_name}"></td>
+        <td th:text="${item.category_name}"></td>
+        <td th:text="${item.productName}"></td>
+        <td th:text="${item.unit}"></td>
+        <td th:text="${item.day1}"></td>
+        <td th:text="${item.dpr1}"></td>
+        <td th:text="${item.dpr2}"></td>
+        <td th:text="${item.dpr3}"></td>
+        <td th:text="${item.dpr4}"></td>
+        <td th:text="${item.direction}"></td>
+        <td th:text="${item.value}"></td>
+        <!-- 다른 필드들도 추가해보세요 -->
+    </tr>
+    </tbody>
+</table>
+
+<script>
+    $(document).ready(function () {
+        $('#productClsSelect').on('change', function () {
+            filterTable();
+        });
+    });
+
+    function filterTable() {
+    var productClsValue = $('#productClsSelect').val();
+    var searchValue = $('#searchInput').val().toLowerCase(); // 검색어를 소문자로 변환
+
+    // 테이블 숨기기
+    $('#dataTable tbody tr').hide();
+
+    if (productClsValue === "") {
+        // 선택안함인 경우, 전체 데이터에서 검색어를 포함한 행 표시
+        $('#dataTable tbody tr')
+            .filter(function () {
+                return $(this).text().toLowerCase().includes(searchValue);
+            })
+            .show();
+    } else {
+        // 선택한 productCls에 맞는 행만 표시
+        $('#dataTable tbody tr[product_cls_code=' + productClsValue + ']')
+            .filter(function () {
+                // 검색어와 일치하는 텍스트가 있는 행 표시
+                return $(this).text().toLowerCase().includes(searchValue);
+            })
+            .show();
+    }
+}
+
+</script>
+
+</body>
+</html>

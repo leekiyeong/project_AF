@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>시세보기</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+
+<h1>도매시장 리스트</h1>
+<select>
+    <option th:each="item, i : ${data}" th:text="${item.codeName}" th:value="${item.codeId}"></option>
+</select>
+<table border="1">
+    <thead>
+    <tr>
+        <th>번호</th>
+        <th>도매상 코드</th>
+        <th>도매상 이름</th>
+        <!-- 다른 필드들도 추가해보세요 -->
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Thymeleaf 반복문을 사용해 데이터를 표시 -->
+    <tr th:each="item, i : ${data}">
+        <td th:text="${i.index + 1}"></td>
+        <td th:text="${item.codeId}"></td>
+        <td th:text="${item.codeName}"></td>
+        <!-- 다른 필드들도 추가해보세요 -->
+    </tr>
+    </tbody>
+</table>
+
+
+
+</body>
+</html>
