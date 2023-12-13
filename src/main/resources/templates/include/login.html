@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Title</title>
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/content.css">
+</head>
+<body>
+
+    <!--CONTENT(S)-->
+    <div class="conts_main" th:fragment="login">
+        <!-- 로그인박스(S) -->
+        <div class="log_box">
+            <h2 class="log_tit">SNS간편인증</h2>
+            <p class="log_text">도매시장 통합홈페이지 OPEN-API 사용을 위한 로그인 화면입니다. <br>
+                최초 로그인 시 API 서비스키가 자동 생성됩니다. </p>
+
+            <div class="btn_box_log">
+                <a href="naverLogin" class="btn_log naver" id="naverIdLogin_loginButton">네이버 아이디로 로그인</a>
+                <a href="javascript:loginWithKakao();" class="btn_log kakao">카카오 아이디로 로그인</a>
+                <a href="#!" class="btn_log google" id="googleIdLogin_loginButton">구글 아이디로 로그인</a>
+            </div>
+            <!-- 로그인박스(E) -->
+        </div>
+    </div>
+    <!--CONTENT(E)-->
+
+</body>
+</html>
