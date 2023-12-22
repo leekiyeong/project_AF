@@ -9,4 +9,28 @@ public class mainController {
 
         return "index";
     }
+
+    @GetMapping("/login")
+    public String loginForm(){
+
+        return "login";
+    }
+
+    @GetMapping("/naverLogin")
+    public String naverLogin(){
+
+        return "naverLogin";
+    }
+
+    @GetMapping("/kakaoLogin")
+    public String kakaoLogin(){
+
+        return "kakaoLogin";
+    }
+
+    @GetMapping("/kakaoLoginTest")
+    public String kakaoLoginTest(){
+
+        return "kakaoLoginTest";
+    }
 }
