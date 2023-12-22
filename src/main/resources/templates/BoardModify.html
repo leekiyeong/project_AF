@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="/css/content.css">
 </head>
 <body>
+<div th:replace="include/header :: header"></div>
     <form th:action="@{/board/update/{id}(id=${board.id})}" method="POST">
         <div class="layout">
             <input name="title" type="text" th:value="${board.title}">
