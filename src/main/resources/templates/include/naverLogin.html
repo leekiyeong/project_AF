@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title></title>
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/content.css">
     <script type="text/javascript" src="https://static.nid.naver.com/js/naverLogin_implicit-1.0.3.js" charset="utf-8"></script>
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
-    <script type="text/javascript" src="/js/header.js"></script>
-    <script type="text/javascript" src="/js/login.js"></script>
 <body>
 
     <div class="conts_main" th:fragment="naverLogin">
@@ -18,8 +18,8 @@
 
             <div class="btn_box_log">
                 <a href="#" id="naver_id_login" class="btn_log naver"></a>
-                <a href="javascript:loginWithKakao();" class="btn_log kakao">카카오 아이디로 로그인</a>
-                <a href="#!" class="btn_log google" id="googleIdLogin_loginButton">구글 아이디로 로그인</a>
+                <a href="/kakaoLogin" class="btn_log kakao">카카오 아이디로 로그인</a>
+                <a href="#" class="btn_log google" id="googleIdLogin_loginButton">구글 아이디로 로그인</a>
             </div>
             <!-- 로그인박스(E) -->
         </div>

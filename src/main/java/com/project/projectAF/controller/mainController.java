@@ -21,4 +21,16 @@ public class mainController {
 
         return "naverLogin";
     }
+
+    @GetMapping("/kakaoLogin")
+    public String kakaoLogin(){
+
+        return "kakaoLogin";
+    }
+
+    @GetMapping("/kakaoLoginTest")
+    public String kakaoLoginTest(){
+
+        return "kakaoLoginTest";
+    }
 }
