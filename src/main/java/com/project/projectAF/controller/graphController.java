@@ -34,9 +34,9 @@ public class graphController {
 
     @RequestMapping(value = "/graph.do" , produces ="application/json")
     public Map<String, Object> getGraph(
-            @RequestParam(required = false) String productclscode,
-            @RequestParam(required = false) String itemcode,
-            @RequestParam(required = false) String kindcode
+            @RequestParam(required = false, name = "productclscode") String productclscode,
+            @RequestParam(required = false, name = "itemcode") String itemcode,
+            @RequestParam(required = false, name = "kindcode") String kindcode
     ) throws Exception {
 
 
