@@ -106,13 +106,13 @@
         <td th:text="${item.category_name}"></td>
         <td th:text="${item.productName}"></td>
         <td th:text="${item.unit}"></td>
-        <td th:text="${item.day1}"></td>
+        <td th:text="${item.lastest_day}"></td>
         <td th:text="${item.dpr1}"></td>
-        <td th:text="${item.dpr2}"></td>
-        <td th:text="${item.dpr3}"></td>
-        <td th:text="${item.dpr4}"></td>
-        <td th:text="${item.direction}"></td>
-        <td th:text="${item.value}"></td>
+        <td th:text="${item.dpr2 != null and not item.dpr2.isEmpty() ? item.dpr2 : '-'}"></td>
+        <td th:text="${item.dpr3 != null and not item.dpr3.isEmpty() ? item.dpr3 : '-'}"></td>
+        <td th:text="${item.dpr4 != null and not item.dpr4.isEmpty() ? item.dpr4 : '-'}"></td>
+        <td th:text="${item.direction != null and not item.direction.isEmpty() ? item.direction : '-'}"></td>
+        <td th:text="${item.value != null and not item.value.isEmpty() ? item.value : '-'}"></td>
         <!-- 다른 필드들도 추가해보세요 -->
     </tr>
     </tbody>
