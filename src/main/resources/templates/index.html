@@ -7,21 +7,96 @@
     <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/content.css">
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <!-- 추가된 부분 -->
+    <style>
+        #myChart {
+            position: fixed;
+            top: 200px;
+            right: 20px;
+            width: 150px;   /* 더 작게 만들려면 조절하세요 */
+            height: 100px;  /* 더 작게 만들려면 조절하세요 */
+        }
+    </style>
 </head>
 <body>
-    <!--WRAP(S)-->
-    <div class="wrap">
+<!--WRAP(S)-->
+<div class="wrap">
 
-        <!-- HEADER(S) -->
-        <div th:replace="include/header :: header"></div>
-        <!-- HEADER(E) -->
+    <!-- HEADER(S) -->
+    <div th:replace="include/header :: header"></div>
+    <!-- HEADER(E) -->
 
-        <!--Content(S)-->
-        <div class="conts_main"></div>
-        <!--Content(E)-->
+    <!--Content(S)-->
+    <div class="conts_main">
+        <script>
+            var prices = [];
+            var days = [];
+        </script>
+        <div th:each="item, i : ${data.item}" th:if="${item.countyname=='서울'}">
+            <!-- Thymeleaf에서는 리스트에 값을 추가하는 방법 -->
+            <script th:inline="javascript">
+                var itemPrices = /*[[${item.price}]]*/;
+                itemPrices = itemPrices.replace(/,/g, ''); // 쉼표 제거
+                prices.push(itemPrices);
+                console.log(prices);
+
+                var itemDays = /*[[${item.regday}]]*/;
+                itemDays = itemDays.toString();
+                days.push(itemDays);
+                console.log(days);
+            </script>
+        </div>
+        <canvas id="myChart"></canvas>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                    var ctx = document.getElementById('myChart').getContext('2d');
+
+                    // HTML 요소의 크기를 직접 지정합니다.
+                    document.getElementById('myChart').width = 300;   // 원하는 너비로 조절하세요
+                    document.getElementById('myChart').height = 150;  // 원하는 높이로 조절하세요
+
+                    var data = {};
+                    if (prices.length > 0) {
+                        data = {
+                            labels: days,
+                            datasets: [{
+                                label: '가격',
+                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 1,
+                                data: prices
+                            }]
+                        };
+                    } else {
+                        // 데이터가 없는 경우 메시지 설정
+                        data = {
+                            labels: ['조회 결과가 없습니다.'],
+                            datasets: []
+                        };
+                    }
+
+                    var options = {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    };
+
+                    var myChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: data,
+                        options: options
+                    });
+                });
+        </script>
     </div>
-
-
-    <!--WARP(E)-->
+    <!--Content(E)-->
+</div>
+<!--WARP(E)-->
 </body>
 </html>

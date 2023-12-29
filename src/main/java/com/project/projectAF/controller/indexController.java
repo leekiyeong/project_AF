@@ -1,6 +1,5 @@
 package com.project.projectAF.controller;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
 import com.fasterxml.jackson.core.json.JsonReadFeature;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -9,18 +8,17 @@ import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -28,11 +26,11 @@ import java.util.Map;
 
 
 @Controller
-public class graphController {
+public class indexController {
 
 
 
-    @RequestMapping(value = "/graph.do" , produces ="application/json")
+    @RequestMapping(value = "/index.do" , produces ="application/json")
     public Map<String, Object> getGraph(
             @RequestParam(required = false, name = "productclscode") String productclscode,
             @RequestParam(required = false, name = "itemcategory") String itemcategory,

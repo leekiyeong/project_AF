@@ -40,88 +40,141 @@
 <body>
 <script>
     $(document).ready(function () {
-            $('#itemcategorySelect').on('change', function () {
-                filterSelect();
-            });
 
-            $('#itemnameSelect').on('change', function () {
-                filterItemName2();
-            });
-            $('#submitBtn').on('click', function () {
-                sendDataToController();
-            });
+
+        $('#itemcategorySelect').on('change', function () {
+            filterSelect();
         });
 
-        function filterSelect() {
-            console.log('filterSelect called');
-            var itemcategoryValue = $('#itemcategorySelect').val();
-            console.log(itemcategoryValue);
+        $('#itemnameSelect').on('change', function () {
+            filterItemName2();
+        });
+        $('#submitBtn').on('click', function () {
+            sendDataToController();
+        });
 
-            // 모든 옵션 숨기기
-            $('#itemnameSelect option').hide();
-            $('#itemname2Select option').hide();
 
-            if (itemcategoryValue !== "") {
-                // 선택한 itemcategory에 맞는 옵션만 보이기
-                $('#itemnameSelect option[data-a_itemcategorycode=' + itemcategoryValue + ']').show();
-            }
+
+
+        $('#productclscodeSelect, #itemcategorySelect, #itemnameSelect, #itemname2Select').on('change', function () {
+            // 선택한 값 변수에 저장
+            selectedProductClsCode = $('#productclscodeSelect').val();
+            selectedItemCategoryCode = $('#itemcategorySelect').val();
+            selectedItemCode = $('#itemnameSelect').val();
+            selectedItemName2 = $('#itemname2Select').val();
+
+            // 선택한 값을 화면에 표시
+            $('#selectedValue1').text(selectedProductClsCode);
+            $('#selectedValue2').text(selectedItemCategoryCode);
+            $('#selectedValue3').text(selectedItemCode);
+            $('#selectedValue4').text(selectedItemName2);
+        });
+
+    });
+
+    function filterSelect() {
+        console.log('filterSelect called');
+        var itemcategoryValue = $('#itemcategorySelect').val();
+        console.log(itemcategoryValue);
+
+        // 모든 옵션 숨기기
+        $('#itemnameSelect option').hide();
+        $('#itemname2Select option').hide();
+
+        if (itemcategoryValue !== "") {
+            // 선택한 itemcategory에 맞는 옵션만 보이기
+            $('#itemnameSelect option[data-a_itemcategorycode=' + itemcategoryValue + ']').show();
         }
+    }
 
-        function filterItemName2() {
-            var selectedItemCode = $('#itemnameSelect').val();
-            console.log('Selected Item Code for itemname2Select: ' + selectedItemCode);
+    function filterItemName2() {
+        var selectedItemCode = $('#itemnameSelect').val();
+        console.log('Selected Item Code for itemname2Select: ' + selectedItemCode);
 
-            // itemname2Select 필터링
-            $('#itemname2Select option').hide();
+        // itemname2Select 필터링
+        $('#itemname2Select option').hide();
 
-            if (selectedItemCode !== "") {
-                // 선택한 itemnameSelect에 맞는 itemname2Select 옵션만 보이기
-                $('#itemname2Select option[data-a_itemcode=' + selectedItemCode + ']').show();
-            }
+        if (selectedItemCode !== "") {
+            // 선택한 itemnameSelect에 맞는 itemname2Select 옵션만 보이기
+            $('#itemname2Select option[data-a_itemcode=' + selectedItemCode + ']').show();
         }
-            function sendDataToController() {
-            var productClsCode = $('#productclscodeSelect').val();
-            var itemCode = $('#itemname2Select').val();
-            var kindCode = $('#itemname2Select option:selected').data('a_kindcode');
+    }
+        function sendDataToController() {
+        setHiddenValues();
+        console.log("sendDataToController 함수 호출 확인");
+
+        var productClsCode = $('#productclscodeSelect').val();
+        var itemCode = $('#itemname2Select').val();
+        var kindCode = $('#itemname2Select option:selected').data('a_kindcode');
+
+        $('#chart').submit();
+    }
 
 
-        }
+
+    function setHiddenValues() {
+    var selectedCategory = $('#itemcategorySelect option:selected').text();
+    var selectedItem = $('#itemnameSelect option:selected').text();
+    var selectedItem2 = $('#itemname2Select option:selected').text();
+
+    console.log("Selected Category:", selectedCategory);
+    console.log("Selected Item:", selectedItem);
+    console.log("Selected Item2:", selectedItem2);
+
+    // 각 hidden 필드에 값을 설정
+    $('#itemcategorynameHidden').val(selectedCategory);
+    $('#itemnameHidden').val(selectedItem);
+    $('#itemname2Hidden').val(selectedItem2);
+}
 </script>
+
 <div th:replace="include/header :: header"></div>
 
 
-<form id="chart" name="chart">
+
+
+<form id="chart" name="chart" action="graph.do" method="post">
     <select name="productclscode" id="productclscodeSelect">
+        <option th:if="${productclscode == '2'}"
+                th:text="도매"
+                th:value="02" selected></option>
         <option th:text="소매" th:value="01"></option>
         <option th:text="도매" th:value="02"></option>
     </select>
 
-    <select id="itemcategorySelect">
-        <option value="" selected>부류코드</option>
+    <select name="itemcategory" id="itemcategorySelect">
+        <option th:text="${itemcategoryname}" th:value="${itemcategory}" selected>부류명</option>
         <option th:each="item, i : ${adata.aaa}"
                 th:if="${i.first or item.a_itemcategorycode != adata.aaa[i.index - 1]?.a_itemcategorycode}"
+                th:data-a_itemcategoryname="${item.a_itemcategoryname}"
                 th:text="${item.a_itemcategoryname}"
                 th:value="${item.a_itemcategorycode}">
         </option>
     </select>
     <select name="itemcode" id="itemnameSelect">
-        <option value="" selected>상품명</option>
+        <option th:text="${itemname}" th:value="${itemcode}" selected>상품명</option>
         <option th:each="item, i : ${adata.aaa}"
                 th:if="${i.first or item.a_itemcode != adata.aaa[i.index - 1]?.a_itemcode}"
                 th:data-a_itemcategorycode="${item.a_itemcategorycode}"
+                th:data-a_itemname="${item.a_itemname}"
                 th:text="${item.a_itemname}"
                 th:value="${item.a_itemcode}">
         </option>
     </select>
     <select name="kindcode" id="itemname2Select">
-        <option value="" selected>상품명</option>
+        <option th:text="${itemname2}" th:value="${kindcode}" selected>상품명</option>
         <option th:each="item, i : ${adata.aaa}"
                 th:data-a_itemcode="${item.a_itemcode}"
+                th:data-a_itemname2="${item.a_itemname2}"
                 th:text="${item.a_itemname2}"
                 th:value="${item.a_kindcode}">
         </option>
     </select>
-    <input type="submit" value="검색">
+    <input type="hidden" id="itemcategorynameHidden" name="itemcategoryname" th:value="${itemcategoryname ?: ''}">
+    <input type="hidden" id="itemnameHidden" name="itemname" th:value="${itemname ?: ''}">
+    <input type="hidden" id="itemname2Hidden" name="itemname2" th:value="${itemname2 ?: ''}">
+
+    <input type="submit" id="submitBtn" value="검색">
     <!-- 메인화면으로 돌아가기 -->
     <a href="/index"><button type="button">메인화면</button></a>
 </form>
@@ -150,6 +203,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         var ctx = document.getElementById('myChart').getContext('2d');
+
 
         var data = {};
         if (prices.length > 0) {
