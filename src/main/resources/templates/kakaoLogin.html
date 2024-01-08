@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>카카오 로그인</title>
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/content.css">
+    <script type="text/javascript" src="https://static.nid.naver.com/js/naverLogin_implicit-1.0.3.js" charset="utf-8"></script>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+</head>
+<body>
+<!--WRAP(S)-->
+<div class="wrap">
+
+    <!-- HEADER(S) -->
+    <div th:replace="include/header :: header"></div>
+    <!-- HEADER(E) -->
+
+    <!--CONTENT(S)-->
+    <div th:replace="include/kakaoLogin :: kakaoLogin"></div>
+    <!--CONTENT(E)-->
+</div>
+<!--WARP(E)-->
+
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- head 부분은 그대로 두고 아래 스크립트 부분을 추가해줘 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 20px;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        select, input, button {
+            margin: 8px;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        #myChart {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/content.css">
+
+</head>
+<body>
+<script>
+    $(document).ready(function () {
+
+
+        $('#itemcategorySelect').on('change', function () {
+            filterSelect();
+        });
+
+        $('#itemnameSelect').on('change', function () {
+            filterItemName2();
+        });
+        $('#submitBtn').on('click', function () {
+            sendDataToController();
+        });
+
+
+
+
+        $('#productclscodeSelect, #itemcategorySelect, #itemnameSelect, #itemname2Select').on('change', function () {
+            // 선택한 값 변수에 저장
+            selectedProductClsCode = $('#productclscodeSelect').val();
+            selectedItemCategoryCode = $('#itemcategorySelect').val();
+            selectedItemCode = $('#itemnameSelect').val();
+            selectedItemName2 = $('#itemname2Select').val();
+
+            // 선택한 값을 화면에 표시
+            $('#selectedValue1').text(selectedProductClsCode);
+            $('#selectedValue2').text(selectedItemCategoryCode);
+            $('#selectedValue3').text(selectedItemCode);
+            $('#selectedValue4').text(selectedItemName2);
+        });
+
+    });
+
+    function filterSelect() {
+        console.log('filterSelect called');
+        var itemcategoryValue = $('#itemcategorySelect').val();
+        console.log(itemcategoryValue);
+
+        // 모든 옵션 숨기기
+        $('#itemnameSelect option').hide();
+        $('#itemname2Select option').hide();
+
+        if (itemcategoryValue !== "") {
+            // 선택한 itemcategory에 맞는 옵션만 보이기
+            $('#itemnameSelect option[data-a_itemcategorycode=' + itemcategoryValue + ']').show();
+        }
+    }
+
+    function filterItemName2() {
+        var selectedItemCode = $('#itemnameSelect').val();
+        console.log('Selected Item Code for itemname2Select: ' + selectedItemCode);
+
+        // itemname2Select 필터링
+        $('#itemname2Select option').hide();
+
+        if (selectedItemCode !== "") {
+            // 선택한 itemnameSelect에 맞는 itemname2Select 옵션만 보이기
+            $('#itemname2Select option[data-a_itemcode=' + selectedItemCode + ']').show();
+        }
+    }
+        function sendDataToController() {
+        setHiddenValues();
+        console.log("sendDataToController 함수 호출 확인");
+
+        var productClsCode = $('#productclscodeSelect').val();
+        var itemCode = $('#itemname2Select').val();
+        var kindCode = $('#itemname2Select option:selected').data('a_kindcode');
+
+        $('#chart').submit();
+    }
+
+
+
+    function setHiddenValues() {
+    var selectedCategory = $('#itemcategorySelect option:selected').text();
+    var selectedItem = $('#itemnameSelect option:selected').text();
+    var selectedItem2 = $('#itemname2Select option:selected').text();
+
+    console.log("Selected Category:", selectedCategory);
+    console.log("Selected Item:", selectedItem);
+    console.log("Selected Item2:", selectedItem2);
+
+    // 각 hidden 필드에 값을 설정
+    $('#itemcategorynameHidden').val(selectedCategory);
+    $('#itemnameHidden').val(selectedItem);
+    $('#itemname2Hidden').val(selectedItem2);
+}
+</script>
+
+<div th:replace="include/header :: header"></div>
+
+
+
+
+<form id="chart" name="chart" action="graph.do" method="post">
+    <select name="productclscode" id="productclscodeSelect">
+        <option th:if="${productclscode == '2'}"
+                th:text="도매"
+                th:value="02" selected></option>
+        <option th:text="소매" th:value="01"></option>
+        <option th:text="도매" th:value="02"></option>
+    </select>
+
+    <select name="itemcategory" id="itemcategorySelect">
+        <option th:text="${itemcategoryname}" th:value="${itemcategory}" selected>부류명</option>
+        <option th:each="item, i : ${adata.aaa}"
+                th:if="${i.first or item.a_itemcategorycode != adata.aaa[i.index - 1]?.a_itemcategorycode}"
+                th:data-a_itemcategoryname="${item.a_itemcategoryname}"
+                th:text="${item.a_itemcategoryname}"
+                th:value="${item.a_itemcategorycode}">
+        </option>
+    </select>
+    <select name="itemcode" id="itemnameSelect">
+        <option th:text="${itemname}" th:value="${itemcode}" selected>상품명</option>
+        <option th:each="item, i : ${adata.aaa}"
+                th:if="${i.first or item.a_itemcode != adata.aaa[i.index - 1]?.a_itemcode}"
+                th:data-a_itemcategorycode="${item.a_itemcategorycode}"
+                th:data-a_itemname="${item.a_itemname}"
+                th:text="${item.a_itemname}"
+                th:value="${item.a_itemcode}">
+        </option>
+    </select>
+    <select name="kindcode" id="itemname2Select">
+        <option th:text="${itemname2}" th:value="${kindcode}" selected>상품명</option>
+        <option th:each="item, i : ${adata.aaa}"
+                th:data-a_itemcode="${item.a_itemcode}"
+                th:data-a_itemname2="${item.a_itemname2}"
+                th:text="${item.a_itemname2}"
+                th:value="${item.a_kindcode}">
+        </option>
+    </select>
+    <input type="hidden" id="itemcategorynameHidden" name="itemcategoryname" th:value="${itemcategoryname ?: ''}">
+    <input type="hidden" id="itemnameHidden" name="itemname" th:value="${itemname ?: ''}">
+    <input type="hidden" id="itemname2Hidden" name="itemname2" th:value="${itemname2 ?: ''}">
+
+    <input type="submit" id="submitBtn" value="검색">
+    <!-- 메인화면으로 돌아가기 -->
+    <a href="/index"><button type="button">메인화면</button></a>
+</form>
+
+<!-- 반복문에서 데이터를 prices 리스트에 추가 -->
+<script>
+    var prices = [];
+    var days = [];
+</script>
+<div th:each="item, i : ${data.item}" th:if="${item.countyname=='서울'}">
+    <!-- Thymeleaf에서는 리스트에 값을 추가하는 방법 -->
+    <script th:inline="javascript">
+        var itemPrices = /*[[${item.price}]]*/;
+        itemPrices = itemPrices.replace(/,/g, ''); // 쉼표 제거
+        prices.push(itemPrices);
+        console.log(prices);
+
+        var itemDays = /*[[${item.regday}]]*/;
+        itemDays = itemDays.toString();
+        days.push(itemDays);
+        console.log(days);
+    </script>
+</div>
+<canvas id="myChart" width="400" height="200"></canvas>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var ctx = document.getElementById('myChart').getContext('2d');
+
+
+        var data = {};
+        if (prices.length > 0) {
+            data = {
+                labels: days,
+                datasets: [{
+                    label: '가격',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1,
+                    data: prices
+                }]
+            };
+        } else {
+            // 데이터가 없는 경우 메시지 설정
+            data = {
+                labels: ['조회 결과가 없습니다.'],
+                datasets: []
+            };
+        }
+
+        var options = {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        };
+
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: data,
+            options: options
+        });
+    });
+</script>
+</body>
+</html>
